@@ -10,7 +10,6 @@ def main(args):
     dec_dir = join(args.decode_dir, 'rouge_dec_dir')
 
     ref_dir = join(args.decode_dir, 'rouge_ref')
-    print(ref_dir)
     assert exists(ref_dir)
 
     if args.rouge:
