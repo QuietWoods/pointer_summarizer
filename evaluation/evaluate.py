@@ -27,12 +27,12 @@ def eval_rouge(dec_pattern, dec_dir, ref_pattern, ref_dir,
     log.get_global_console_logger().setLevel(logging.WARNING)
     with tempfile.TemporaryDirectory() as tmp_dir:
         Rouge155.convert_summaries_to_rouge_format(
-            dec_dir, join(tmp_dir, 'dec'))
+            dec_dir, join(tmp_dir, 'rouge_dec_dir'))
         Rouge155.convert_summaries_to_rouge_format(
-            ref_dir, join(tmp_dir, 'ref'))
+            ref_dir, join(tmp_dir, 'rouge_ref'))
         Rouge155.write_config_static(
-            join(tmp_dir, 'dec'), dec_pattern,
-            join(tmp_dir, 'ref'), ref_pattern,
+            join(tmp_dir, 'rouge_dec_dir'), dec_pattern,
+            join(tmp_dir, 'rouge_ref'), ref_pattern,
             join(tmp_dir, 'settings.xml'), system_id
         )
         cmd = (join(_ROUGE_PATH, 'ROUGE-1.5.5.pl')
@@ -48,15 +48,16 @@ try:
 except KeyError:
     print('Warning: METEOR is not configured')
     _METEOR_PATH = None
+
 def eval_meteor(dec_pattern, dec_dir, ref_pattern, ref_dir):
     """ METEOR evaluation"""
     assert _METEOR_PATH is not None
     ref_matcher = re.compile(ref_pattern)
     refs = sorted([r for r in os.listdir(ref_dir) if ref_matcher.match(r)],
-                  key=lambda name: int(name.split('.')[0]))
+                  key=lambda name: name.split('.')[0])
     dec_matcher = re.compile(dec_pattern)
     decs = sorted([d for d in os.listdir(dec_dir) if dec_matcher.match(d)],
-                  key=lambda name: int(name.split('.')[0]))
+                  key=lambda name: name.split('.')[0])
     @curry
     def read_file(file_dir, file_name):
         with open(join(file_dir, file_name)) as f:

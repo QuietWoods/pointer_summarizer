@@ -3,7 +3,7 @@ import argparse
 
 from os.path import join, exists
 
-from .evaluate import eval_meteor, eval_rouge
+from evaluate import eval_meteor, eval_rouge
 
 
 def main(args):
