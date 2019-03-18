@@ -8,8 +8,8 @@ from threading import Thread
 import numpy as np
 import tensorflow as tf
 
-import config
-import data
+from . import config
+from . import data
 
 import random
 
