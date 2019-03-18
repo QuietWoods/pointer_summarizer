@@ -2,10 +2,12 @@ from __future__ import unicode_literals, print_function, division
 
 import os
 import time
-import sys
 
 import tensorflow as tf
 import torch
+
+import sys
+sys.path.append('../')
 
 from data_util import config
 from data_util.batcher import Batcher
@@ -16,6 +18,7 @@ from train_util import get_input_from_batch, get_output_from_batch
 from model import Model
 
 use_cuda = config.use_gpu and torch.cuda.is_available()
+
 
 class Evaluate(object):
     def __init__(self, model_file_path):
@@ -86,7 +89,8 @@ class Evaluate(object):
 
 
 if __name__ == '__main__':
-    model_filename = sys.argv[1]
+    # model_filename = sys.argv[1]
+    model_filename = "../log/train_1552812092/model/model_8000_1552823201"
     eval_processor = Evaluate(model_filename)
     eval_processor.run_eval()
 

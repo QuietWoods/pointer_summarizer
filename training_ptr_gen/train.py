@@ -6,18 +6,22 @@ import argparse
 
 import tensorflow as tf
 import torch
-from .model import Model
+from model import Model
 from torch.nn.utils import clip_grad_norm_
 
 from torch.optim import Adagrad
+
+import sys
+sys.path.append('../')
 
 from data_util import config
 from data_util.batcher import Batcher
 from data_util.data import Vocab
 from data_util.utils import calc_running_avg_loss
-from .train_util import get_input_from_batch, get_output_from_batch
+from train_util import get_input_from_batch, get_output_from_batch
 
 use_cuda = config.use_gpu and torch.cuda.is_available()
+
 
 class Train(object):
     def __init__(self):
@@ -129,13 +133,14 @@ class Train(object):
 
             if iter % 100 == 0:
                 self.summary_writer.flush()
-            print_interval = 1000
+            print_interval = 10
             if iter % print_interval == 0:
                 print('steps %d, seconds for %d batch: %.2f , loss: %f' % (iter, print_interval,
                                                                            time.time() - start, loss))
                 start = time.time()
-            if iter % 5000 == 0:
+            if iter % 1000 == 0:
                 self.save_model(running_avg_loss, iter)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train script")

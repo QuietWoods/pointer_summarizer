@@ -1,6 +1,6 @@
 # Most of this file is copied form https://github.com/abisee/pointer-generator/blob/master/batcher.py
 
-import Queue
+import queue
 import time
 from random import shuffle
 from threading import Thread
@@ -165,8 +165,8 @@ class Batcher(object):
         self.mode = mode
         self.batch_size = batch_size
         # Initialize a queue of Batches waiting to be used, and a queue of Examples waiting to be batched
-        self._batch_queue = Queue.Queue(self.BATCH_QUEUE_MAX)
-        self._example_queue = Queue.Queue(self.BATCH_QUEUE_MAX * self.batch_size)
+        self._batch_queue = queue.Queue(self.BATCH_QUEUE_MAX)
+        self._example_queue = queue.Queue(self.BATCH_QUEUE_MAX * self.batch_size)
 
         # Different settings depending on whether we're in single_pass mode or not
         if single_pass:
@@ -216,7 +216,7 @@ class Batcher(object):
         while True:
             try:
                 (article,
-                 abstract) = input_gen.next()  # read the next example from file. article and abstract are both strings.
+                 abstract) = next(input_gen)  # read the next example from file. article and abstract are both strings.
             except StopIteration:  # if there are no more examples:
                 tf.logging.info("The example generator for this example queue filling thread has exhausted data.")
                 if self._single_pass:
@@ -279,7 +279,7 @@ class Batcher(object):
 
     def text_generator(self, example_generator):
         while True:
-            e = example_generator.next()  # e is a tf.Example
+            e = next(example_generator) # e is a tf.Example
             try:
                 article_text = e.features.feature['article'].bytes_list.value[
                     0]  # the article text was saved under the key 'article' in the data files
@@ -292,4 +292,7 @@ class Batcher(object):
                 # tf.logging.warning('Found an example with empty article text. Skipping it.')
                 continue
             else:
+                article_text = str(article_text, encoding='utf-8')
+                abstract_text = str(abstract_text, encoding='utf-8')
+                # print(article_text, abstract_text)
                 yield (article_text, abstract_text)

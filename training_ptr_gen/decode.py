@@ -2,16 +2,14 @@
 
 from __future__ import unicode_literals, print_function, division
 
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 import os
 import time
 
 import torch
 from torch.autograd import Variable
+
+import sys
+sys.path.append('../')
 
 from data_util.batcher import Batcher
 from data_util.data import Vocab
@@ -73,6 +71,8 @@ class BeamSearch(object):
         counter = 0
         batch = self.batcher.next_batch()
         while batch is not None:
+            #
+            break
             # Run beam search to get best Hypothesis
             best_summary = self.beam_search(batch)
 
@@ -93,7 +93,7 @@ class BeamSearch(object):
             write_for_rouge(original_abstract_sents, decoded_words, counter,
                             self._rouge_ref_dir, self._rouge_dec_dir)
             counter += 1
-            if counter % 1000 == 0:
+            if counter % 100 == 0:
                 print('%d example in %d sec'%(counter, time.time() - start))
                 start = time.time()
 
@@ -123,7 +123,7 @@ class BeamSearch(object):
                       state=(dec_h[0], dec_c[0]),
                       context = c_t_0[0],
                       coverage=(coverage_t_0[0] if config.is_coverage else None))
-                 for _ in xrange(config.beam_size)]
+                 for _ in range(config.beam_size)]
         results = []
         steps = 0
         while steps < config.max_dec_steps and len(results) < config.beam_size:
@@ -167,13 +167,13 @@ class BeamSearch(object):
 
             all_beams = []
             num_orig_beams = 1 if steps == 0 else len(beams)
-            for i in xrange(num_orig_beams):
+            for i in range(num_orig_beams):
                 h = beams[i]
                 state_i = (dec_h[i], dec_c[i])
                 context_i = c_t[i]
                 coverage_i = (coverage_t[i] if config.is_coverage else None)
 
-                for j in xrange(config.beam_size * 2):  # for each of the top 2*beam_size hyps:
+                for j in range(config.beam_size * 2):  # for each of the top 2*beam_size hyps:
                     new_beam = h.extend(token=topk_ids[i, j].item(),
                                    log_prob=topk_log_probs[i, j].item(),
                                    state=state_i,
@@ -201,7 +201,8 @@ class BeamSearch(object):
         return beams_sorted[0]
 
 if __name__ == '__main__':
-    model_filename = sys.argv[1]
+    # model_filename = sys.argv[1]
+    model_filename = "../log/train_1552812092/model/model_8000_1552823201"
     beam_Search_processor = BeamSearch(model_filename)
     beam_Search_processor.decode()
 
