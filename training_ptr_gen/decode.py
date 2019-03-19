@@ -18,6 +18,8 @@ from model import Model
 from data_util.utils import write_for_rouge, rouge_eval, rouge_log
 from train_util import get_input_from_batch
 
+from evaluation.print_rouge import BasicRouge
+
 
 use_cuda = config.use_gpu and torch.cuda.is_available()
 
@@ -101,8 +103,10 @@ class BeamSearch(object):
 
         print("Decoder has finished reading dataset for single_pass.")
         print("Now starting ROUGE eval...")
-        results_dict = rouge_eval(self._rouge_ref_dir, self._rouge_dec_dir)
-        rouge_log(results_dict, self._decode_dir)
+        basic_rouge = BasicRouge(dirname=self._decode_dir)
+        basic_rouge.dir_files_scores()
+        # results_dict = rouge_eval(self._rouge_ref_dir, self._rouge_dec_dir)
+        # rouge_log(results_dict, self._decode_dir)
 
 
     def beam_search(self, batch):
