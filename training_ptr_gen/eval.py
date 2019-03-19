@@ -89,8 +89,8 @@ class Evaluate(object):
 
 
 if __name__ == '__main__':
-    # model_filename = sys.argv[1]
-    model_filename = "../log/train_1552812092/model/model_8000_1552823201"
+    model_filename = sys.argv[1]
+    # model_filename = "../log/train_1552812092/model/model_8000_1552823201"
     eval_processor = Evaluate(model_filename)
     eval_processor.run_eval()
 
