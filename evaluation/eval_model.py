@@ -13,13 +13,13 @@ def main(args):
     assert exists(ref_dir)
 
     if args.rouge:
-        dec_pattern = r'(\d+_decoded).txt'
-        ref_pattern = r'\d+_reference.txt'
+        dec_pattern = r'(\d+)_decoded.txt'
+        ref_pattern = r'#ID#_reference.txt'
         output = eval_rouge(dec_pattern, dec_dir, ref_pattern, ref_dir)
         metric = 'rouge'
     else:
-        dec_pattern = r'\d+_decoded.txt'
-        ref_pattern = r'\d+_reference.txt'
+        dec_pattern = r'(\d+)_decoded.txt'
+        ref_pattern = r'#ID#_reference.txt'
         output = eval_meteor(dec_pattern, dec_dir, ref_pattern, ref_dir)
         metric = 'meteor'
     print(output)
